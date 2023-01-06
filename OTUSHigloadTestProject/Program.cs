@@ -13,9 +13,11 @@ var services = builder.Services;
 
 services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
-services.AddSwaggerDocument();
+services.AddSwaggerDocument((settings) =>
+{
+    settings.Title = "OTUS Highload Architect";
+});
 
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -54,7 +56,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi3();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

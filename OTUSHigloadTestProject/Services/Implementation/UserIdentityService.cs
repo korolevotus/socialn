@@ -34,25 +34,23 @@ namespace OTUSHigloadTestProject.Services.Implementation
 
             return encodedJwt;
         }
-        private ClaimsIdentity GetIdentity(string username, string password)
+        private ClaimsIdentity? GetIdentity(string username, string password)
         {
             var user = peoples.FirstOrDefault(x => x.Id == username && x.Password == password);
 
-            if (user != null)
-            {
-                var claims = new List<Claim>
+            if (user == null) throw new Exception("Неверный логин пользователя или пароль");
+
+            var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.Id)
                 };
 
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
+            ClaimsIdentity claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+            return claimsIdentity;
 
-            // если пользователя не найдено
-            return null;
+
         }
     }
 }
