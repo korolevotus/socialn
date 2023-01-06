@@ -1,7 +1,9 @@
 # OTUS Highload архитектор. Домашнее задание. Простейшая социальная сеть
 Чтобы запустить проект, используйте docker
 
-```docker build -f "OTUSHigloadTestProject/Dockerfile" -t korolevdimage . ```
+```
+docker build -f "OTUSHigloadTestProject/Dockerfile" -t korolevdimage .
+```
 
 далее
 
