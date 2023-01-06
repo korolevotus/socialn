@@ -7,8 +7,8 @@
 
 ```
 docker run -it 
--e "ASPNETCORE_ENVIRONMENT=Development"
--e "ASPNETCORE_URLS=http://+:80"
---name OTUSHighload.korolevd
--p 44390:80 korolevdimage
+    -e "ASPNETCORE_ENVIRONMENT=Development"
+    -e "ASPNETCORE_URLS=http://+:80"
+    --name OTUSHighload.korolevd
+    -p 44390:80 korolevdimage
 ```
