@@ -9,7 +9,6 @@ namespace OTUSHigloadTestProject.Services.Implementation
 {
     public class UserIdentityService : IUserIdentityService
     {
-        // тестовые данные вместо использования базы данных
         private List<UserIdentity> peoples = new List<UserIdentity>
         {
             new UserIdentity {Id="admin@gmail.com", Password="12345" },
