@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using OTUSHigloadTestProject.Helpers;
 using OTUSHigloadTestProject.Models;
 using OTUSHigloadTestProject.Models.Requests;
 using OTUSHigloadTestProject.Services.Abstract;
@@ -11,8 +13,8 @@ namespace OTUSHigloadTestProject.Services.Implementation
     {
         private List<UserIdentity> peoples = new List<UserIdentity>
         {
-            new UserIdentity {Id="admin@gmail.com", Password="12345" },
-            new UserIdentity { Id="qwerty@gmail.com", Password="55555" }
+            new UserIdentity {Id="admin@gmail.com", Password="kcOk0oEftxdpPvXzIzJ4PMO0ogCWZ3vFijoDJ5wSXik=",Salt="C+d+Opq9bXRQc9Dy+aCe3g==" },
+            new UserIdentity { Id="qwerty@gmail.com", Password="55555",Salt="123" }
         };
 
         public async Task<string> LoginAsync(LoginRequest loginRequest)
@@ -35,9 +37,14 @@ namespace OTUSHigloadTestProject.Services.Implementation
         }
         private ClaimsIdentity? GetIdentity(string username, string password)
         {
-            var user = peoples.FirstOrDefault(x => x.Id == username && x.Password == password);
+            var user = peoples.FirstOrDefault(x => x.Id == username);
 
             if (user == null) throw new Exception("Неверный логин пользователя или пароль");
+
+            var passwordHash = PasswordHasher.ComputeHash(password, user.Salt);
+
+            if (user.Password != passwordHash)
+                throw new Exception("Неверный логин пользователя или пароль");
 
             var claims = new List<Claim>
                 {
