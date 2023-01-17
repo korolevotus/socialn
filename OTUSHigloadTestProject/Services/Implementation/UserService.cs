@@ -1,13 +1,11 @@
 ﻿using Dapper;
 using Npgsql;
-using OTUSControllers;
+using OTUSHigloadTestProject.DTO;
 using OTUSHigloadTestProject.Helpers;
 using OTUSHigloadTestProject.Models.Database;
 using OTUSHigloadTestProject.Models.Requests;
 using OTUSHigloadTestProject.Services.Abstract;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq.Expressions;
 
 
 namespace OTUSHigloadTestProject.Services.Implementation
@@ -20,9 +18,21 @@ namespace OTUSHigloadTestProject.Services.Implementation
         {
             _connectionString = connectionString;
         }
-        public Task<User> GetByIdAsync(string id)
+        public async Task<UserFormDto?> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new NpgsqlConnection(_connectionString);
+
+            return (await db.QueryAsync<UserFormDto>(@"
+                                SELECT
+                                id,
+                                first_name as FirstName,
+                                second_name as SecondName,
+                                age,
+                                biography,
+                                city,
+                                login
+                                FROM users WHERE id=@id",
+                                new { id = new Guid(id) }))?.FirstOrDefault();
         }
 
         public async Task<User?> GetByLoginAsync(string login)

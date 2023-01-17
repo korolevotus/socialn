@@ -8,6 +8,7 @@ namespace OTUSControllers
     using OTUSHigloadTestProject.Models.Requests;
     using OTUSHigloadTestProject.Services.Abstract;
     using System = global::System;
+    using OTUSHigloadTestProject.DTO;
 
     public class UserController : ResultController
     {
@@ -23,7 +24,7 @@ namespace OTUSControllers
         /// </remarks>
         /// <returns>Успешная регистрация</returns>
         [HttpPost("user/register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterRequest body)
+        public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest body)
         {
             Guid newUserId;
             try
@@ -42,11 +43,21 @@ namespace OTUSControllers
         /// </remarks>
         /// <param name="id">Идентификатор пользователя</param>
         /// <returns>Успешное получение анкеты пользователя</returns>
-        [Authorize]
-        [HttpGet, Route("user/get/{id}", Name = "get")]
-        public Task<User> Get(string id)
+        //[Authorize]
+        [HttpGet("user/get/{id}")]
+        public async Task<IActionResult> GetAsync(string id)
         {
-            return _userService.GetByIdAsync(id);
+            UserFormDto? userForm;
+            try
+            {
+                userForm = await _userService.GetByIdAsync(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message ?? "Неизвестная ошибка");
+            }
+            return Ok(new { userForm });
+
         }
 
         /// <remarks>
@@ -56,7 +67,7 @@ namespace OTUSControllers
         /// <param name="last_name">Условие поиска по фамилии</param>
         /// <returns>Успешные поиск пользователя</returns>
         [HttpGet, Route("user/search", Name = "search")]
-        public async Task<IActionResult> Search([FromQuery] string first_name, [FromQuery] string last_name)
+        public async Task<IActionResult> SearchAsync([FromQuery] string first_name, [FromQuery] string last_name)
         {
             return BadRequest("Пока не реализовали");
         }

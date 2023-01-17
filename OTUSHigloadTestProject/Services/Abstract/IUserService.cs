@@ -1,5 +1,6 @@
 ﻿
 using OTUSControllers;
+using OTUSHigloadTestProject.DTO;
 using OTUSHigloadTestProject.Models.Database;
 using OTUSHigloadTestProject.Models.Requests;
 
@@ -24,7 +25,7 @@ namespace OTUSHigloadTestProject.Services.Abstract
 
         /// <returns>Успешное получение анкеты пользователя</returns>
 
-        Task<User> GetByIdAsync(string id);
+        Task<UserFormDto?> GetByIdAsync(string id);
 
         /// <remarks>
         /// Поиск анкет
