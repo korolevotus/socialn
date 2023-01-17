@@ -1,4 +1,6 @@
-﻿using OTUSControllers;
+﻿
+using OTUSControllers;
+using OTUSHigloadTestProject.Models.Database;
 using OTUSHigloadTestProject.Models.Requests;
 
 namespace OTUSHigloadTestProject.Services.Abstract
@@ -12,7 +14,7 @@ namespace OTUSHigloadTestProject.Services.Abstract
 
         /// <returns>Успешная регистрация</returns>
 
-        Task<Response2> RegisterAsync(Body2 body);
+        Task<Guid> RegisterAsync(UserRegisterRequest body);
 
         /// <remarks>
         /// Получение анкеты пользователя
@@ -22,7 +24,7 @@ namespace OTUSHigloadTestProject.Services.Abstract
 
         /// <returns>Успешное получение анкеты пользователя</returns>
 
-        Task<User> GetAsync(string id);
+        Task<User> GetByIdAsync(string id);
 
         /// <remarks>
         /// Поиск анкет
@@ -35,6 +37,8 @@ namespace OTUSHigloadTestProject.Services.Abstract
         /// <returns>Успешные поиск пользователя</returns>
 
         Task<ICollection<User>> SearchAsync(string first_name, string last_name);
+
+        Task<User?> GetByLoginAsync(string login);
 
     }
 }

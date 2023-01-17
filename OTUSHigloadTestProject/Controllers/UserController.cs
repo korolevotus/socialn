@@ -3,28 +3,38 @@ namespace OTUSControllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using OTUSHigloadTestProject.Controllers;
+    using OTUSHigloadTestProject.Models.Database;
+    using OTUSHigloadTestProject.Models.Requests;
     using OTUSHigloadTestProject.Services.Abstract;
     using System = global::System;
 
-    public class UserController : ControllerBase
+    public class UserController : ResultController
     {
-        private IUserService _implementation;
+        private IUserService _userService;
 
-        public UserController(IUserService implementation)
+        public UserController(IUserService userService)
         {
-            _implementation = implementation;
+            _userService = userService;
         }
 
         /// <remarks>
         /// Регистрация нового пользователя
         /// </remarks>
         /// <returns>Успешная регистрация</returns>
-        [Authorize()]
         [HttpPost("user/register")]
-        public async Task<Response2> Register([FromBody] Body2 body)
+        public async Task<IActionResult> Register([FromBody] UserRegisterRequest body)
         {
-
-            return await _implementation.RegisterAsync(body);
+            Guid newUserId;
+            try
+            {
+                newUserId = await _userService.RegisterAsync(body);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message ?? "Неизвестная ошибка");
+            }
+            return Ok(new { Id = newUserId });
         }
 
         /// <remarks>
@@ -32,11 +42,11 @@ namespace OTUSControllers
         /// </remarks>
         /// <param name="id">Идентификатор пользователя</param>
         /// <returns>Успешное получение анкеты пользователя</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/get/{id}", Name = "get")]
-        public System.Threading.Tasks.Task<User> Get(string id)
+        [Authorize]
+        [HttpGet, Route("user/get/{id}", Name = "get")]
+        public Task<User> Get(string id)
         {
-
-            return _implementation.GetAsync(id);
+            return _userService.GetByIdAsync(id);
         }
 
         /// <remarks>
@@ -45,97 +55,15 @@ namespace OTUSControllers
         /// <param name="first_name">Условие поиска по имени</param>
         /// <param name="last_name">Условие поиска по фамилии</param>
         /// <returns>Успешные поиск пользователя</returns>
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/search", Name = "search")]
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<User>> Search([Microsoft.AspNetCore.Mvc.FromQuery] string first_name, [Microsoft.AspNetCore.Mvc.FromQuery] string last_name)
+        [HttpGet, Route("user/search", Name = "search")]
+        public Task<System.Collections.Generic.ICollection<User>> Search([Microsoft.AspNetCore.Mvc.FromQuery] string first_name, [Microsoft.AspNetCore.Mvc.FromQuery] string last_name)
         {
 
-            return _implementation.SearchAsync(first_name, last_name);
+            return _userService.SearchAsync(first_name, last_name);
         }
 
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class User
-    {
-        /// <summary>
-        /// Идентификатор пользователя
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Имя
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("first_name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string First_name { get; set; }
-
-        /// <summary>
-        /// Фамилия
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("second_name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Second_name { get; set; }
-
-        /// <summary>
-        /// Возраст
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("age", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Age { get; set; }
-
-        /// <summary>
-        /// Интересы
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("biography", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Biography { get; set; }
-
-        /// <summary>
-        /// Город
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("city", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string City { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Body2
-    {
-        [Newtonsoft.Json.JsonProperty("first_name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string First_name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("second_name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Second_name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("age", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Age { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("biography", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Biography { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("city", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string City { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Password { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Response2

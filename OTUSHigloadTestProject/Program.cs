@@ -9,6 +9,7 @@ using OTUSHigloadTestProject.Services.Implementation;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
 var services = builder.Services;
 
 services.AddControllers();
@@ -45,7 +46,9 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     });
 
 services.AddTransient<IUserIdentityService, UserIdentityService>();
-services.AddTransient<IUserService, UserService>();
+
+var connectionString = builder.Configuration.GetConnectionString("SocialNetworkConnectionString");
+services.AddTransient<IUserService, UserService>(p=>new UserService(connectionString));
 
 var app = builder.Build();
 

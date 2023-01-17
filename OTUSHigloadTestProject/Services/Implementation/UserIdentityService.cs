@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using OTUSHigloadTestProject.Helpers;
 using OTUSHigloadTestProject.Models;
 using OTUSHigloadTestProject.Models.Requests;
@@ -17,9 +16,16 @@ namespace OTUSHigloadTestProject.Services.Implementation
             new UserIdentity { Id="qwerty@gmail.com", Password="55555",Salt="123" }
         };
 
+        private readonly IUserService _userService;
+
+        public UserIdentityService(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         public async Task<string> LoginAsync(LoginRequest loginRequest)
         {
-            var identity = GetIdentity(loginRequest.Id, loginRequest.Password);
+            var identity = await GetIdentityAsync(loginRequest.Id, loginRequest.Password);
 
             var now = DateTime.UtcNow;
 
@@ -35,9 +41,9 @@ namespace OTUSHigloadTestProject.Services.Implementation
 
             return encodedJwt;
         }
-        private ClaimsIdentity? GetIdentity(string username, string password)
+        private async Task<ClaimsIdentity?> GetIdentityAsync(string username, string password)
         {
-            var user = peoples.FirstOrDefault(x => x.Id == username);
+            var user = await _userService.GetByLoginAsync(username);
 
             if (user == null) throw new Exception("Неверный логин пользователя или пароль");
 
@@ -48,7 +54,7 @@ namespace OTUSHigloadTestProject.Services.Implementation
 
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Id)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login)
                 };
 
             ClaimsIdentity claimsIdentity =
