@@ -56,10 +56,9 @@ namespace OTUSControllers
         /// <param name="last_name">Условие поиска по фамилии</param>
         /// <returns>Успешные поиск пользователя</returns>
         [HttpGet, Route("user/search", Name = "search")]
-        public Task<System.Collections.Generic.ICollection<User>> Search([Microsoft.AspNetCore.Mvc.FromQuery] string first_name, [Microsoft.AspNetCore.Mvc.FromQuery] string last_name)
+        public async Task<IActionResult> Search([FromQuery] string first_name, [FromQuery] string last_name)
         {
-
-            return _userService.SearchAsync(first_name, last_name);
+            return BadRequest("Пока не реализовали");
         }
 
     }
