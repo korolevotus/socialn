@@ -2,16 +2,16 @@
 Чтобы запустить проект, используйте docker
 
 ```
-docker build -f "OTUSHigloadTestProject/Dockerfile" -t korolevdimage .
+docker-compose build
 ```
 
 далее
 
 ```
-docker run -it \
-    -e "ASPNETCORE_ENVIRONMENT=Development" \
-    -e "ASPNETCORE_URLS=http://+:80"\
-    --name OTUSHighload.korolevd\
-    -p 44390:80 korolevdimage\
-    \
+docker-compose up
+
 ```
+
+Открыть браузер http://localhost:44390/swagger
+
+Аутентификация JWT
