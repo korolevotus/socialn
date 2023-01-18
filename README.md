@@ -9,9 +9,10 @@ docker-compose build
 
 ```
 docker-compose up
-
 ```
 
 Открыть браузер http://localhost:44390/swagger
+
+Open API спецификация была изменена, из swagger UI понятно как пользоваться.
 
 Аутентификация JWT
