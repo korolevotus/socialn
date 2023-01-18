@@ -4,8 +4,8 @@ namespace OTUSHigloadTestProject.Models.Requests
 {
     public class LoginRequest
     {
-        [JsonProperty("id", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public string Id { get; set; }
+        [JsonProperty("login", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string Login { get; set; }
 
         [JsonProperty("password", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Password { get; set; }

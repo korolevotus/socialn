@@ -25,7 +25,7 @@ namespace OTUSHigloadTestProject.Services.Implementation
 
         public async Task<string> LoginAsync(LoginRequest loginRequest)
         {
-            var identity = await GetIdentityAsync(loginRequest.Id, loginRequest.Password);
+            var identity = await GetIdentityAsync(loginRequest.Login, loginRequest.Password);
 
             var now = DateTime.UtcNow;
 
