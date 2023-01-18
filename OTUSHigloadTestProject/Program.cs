@@ -47,7 +47,9 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 services.AddTransient<IUserIdentityService, UserIdentityService>();
 
-var connectionString = builder.Configuration.GetConnectionString("SocialNetworkConnectionString");
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+builder.Configuration.GetConnectionString("SocialNetworkConnectionString");
 services.AddTransient<IUserService, UserService>(p=>new UserService(connectionString));
 
 var app = builder.Build();

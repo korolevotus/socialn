@@ -1,0 +1,42 @@
+version: '3.4'
+
+networks:
+  socnetapi-dev:
+    driver: bridge 
+
+services:
+  socnetapi:
+    image: korolevdimage:latest
+    depends_on:
+      - "postgres_image"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "44390:80"     
+    environment:
+      DB_CONNECTION_STRING: "Server=postgres_image;Database=socnet;User Id=kingev;Password=kingev"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:80"
+    networks:
+      - socnetapi-dev 
+  
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+    environment:
+      POSTGRES_USER: "kingev"
+      POSTGRES_PASSWORD: "kingev"
+      POSTGRES_DB: "socnet"
+    networks:
+      - socnetapi-dev
+volumes:
+  db_volume:
+         
+    
+     
