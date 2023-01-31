@@ -69,9 +69,23 @@ namespace OTUSHigloadTestProject.Services.Implementation
             return newUserId;
         }
 
-        public Task<ICollection<User>> SearchAsync(string first_name, string last_name)
+        public async Task<IEnumerable<UserFormDto>> SearchAsync(string firstName, string lastName)
         {
-            throw new NotImplementedException();
+            if (firstName.Length < 3 || lastName.Length < 3) throw new Exception("Имя и фамилия должны содержать не менее 3 букв");
+
+            using IDbConnection db = new NpgsqlConnection(_connectionString);
+
+            return await db.QueryAsync<UserFormDto>(@"
+                                SELECT
+                                id,
+                                first_name as FirstName,
+                                second_name as SecondName,
+                                age,
+                                biography,
+                                city as City,
+                                login
+                                FROM users WHERE LOWER(first_name) like @firstName AND LOWER(second_name) like @secondName",
+                       new { firstName = $"{firstName.ToLower()}%", secondName = $"{lastName.ToLower()}%" });
         }
     }
 }

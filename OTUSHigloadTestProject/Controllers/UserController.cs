@@ -67,9 +67,18 @@ namespace OTUSControllers
         /// <param name="last_name">Условие поиска по фамилии</param>
         /// <returns>Успешные поиск пользователя</returns>
         [HttpGet, Route("user/search", Name = "search")]
-        public async Task<IActionResult> SearchAsync([FromQuery] string first_name, [FromQuery] string last_name)
+        public async Task<IActionResult> SearchAsync([FromQuery] string firstName, [FromQuery] string lastName)
         {
-            return BadRequest("Пока не реализовали");
+            IEnumerable<UserFormDto> userForms;
+            try
+            {
+                userForms = await _userService.SearchAsync(firstName, lastName);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message ?? "Неизвестная ошибка");
+            }
+            return Ok(new { total = userForms.Count(), users = userForms });
         }
 
     }
@@ -94,11 +103,3 @@ namespace OTUSControllers
 
 
 }
-
-#pragma warning restore 1591
-#pragma warning restore 1573
-#pragma warning restore 472
-#pragma warning restore 114
-#pragma warning restore 108
-#pragma warning restore 3016
-#pragma warning restore 8603

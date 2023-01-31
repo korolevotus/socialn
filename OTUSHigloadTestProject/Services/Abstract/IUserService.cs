@@ -37,7 +37,7 @@ namespace OTUSHigloadTestProject.Services.Abstract
 
         /// <returns>Успешные поиск пользователя</returns>
 
-        Task<ICollection<User>> SearchAsync(string first_name, string last_name);
+        Task<IEnumerable<UserFormDto>> SearchAsync(string firstName, string lastName);
 
         Task<User?> GetByLoginAsync(string login);
 
