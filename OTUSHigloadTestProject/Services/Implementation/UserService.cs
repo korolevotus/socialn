@@ -49,7 +49,7 @@ namespace OTUSHigloadTestProject.Services.Implementation
             var salt = PasswordHasher.GenerateSalt();
             var passwordHash = PasswordHasher.ComputeHash(userRegisterRequest.Password, salt);
 
-            var newUserId = await db.QuerySingleAsync<Guid>(@"
+            return await db.QuerySingleAsync<Guid>(@"
                             INSERT INTO users
                             (first_name, second_name, age, biography, city, password, salt, login)
                             VALUES(@FirstName,@SecondName,@Age,@Biography,@City,@Password,@Salt,@Login)
@@ -66,7 +66,6 @@ namespace OTUSHigloadTestProject.Services.Implementation
                                 SecondName = userRegisterRequest.Second_name
 
                             });
-            return newUserId;
         }
 
         public async Task<IEnumerable<UserFormDto>> SearchAsync(string firstName, string lastName)
