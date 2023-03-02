@@ -15,5 +15,3 @@ CREATE TABLE users (
 	salt varchar NOT NULL,
 	login varchar NULL
 );
-
-CREATE INDEX idx_first_name_second_name ON users(lower(first_name) text_pattern_ops,lower(second_name) text_pattern_ops);

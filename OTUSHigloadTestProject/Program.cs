@@ -2,9 +2,11 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using OTUSHigloadTestProject.Models;
 using OTUSHigloadTestProject.Services.Abstract;
 using OTUSHigloadTestProject.Services.Implementation;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +52,10 @@ services.AddTransient<IUserIdentityService, UserIdentityService>();
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
 builder.Configuration.GetConnectionString("SocialNetworkConnectionString");
-services.AddTransient<IUserService, UserService>(p=>new UserService(connectionString));
+
+services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
+
+services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
