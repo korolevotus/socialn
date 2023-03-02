@@ -12,17 +12,16 @@ namespace OTUSHigloadTestProject.Services.Implementation
 {
     public class UserService : IUserService
     {
-        private readonly string _connectionString;
+        //private readonly string _connectionString;
+        private readonly IDbConnection _dbConnection;
 
-        public UserService(string connectionString)
+        public UserService(IDbConnection dbConnection)
         {
-            _connectionString = connectionString;
+           _dbConnection = dbConnection;
         }
         public async Task<UserFormDto?> GetByIdAsync(string id)
         {
-            using IDbConnection db = new NpgsqlConnection(_connectionString);
-
-            return (await db.QueryAsync<UserFormDto>(@"
+            return (await _dbConnection.QueryAsync<UserFormDto>(@"
                                 SELECT
                                 id,
                                 first_name as FirstName,
@@ -37,19 +36,19 @@ namespace OTUSHigloadTestProject.Services.Implementation
 
         public async Task<User?> GetByLoginAsync(string login)
         {
-            using IDbConnection db = new NpgsqlConnection(_connectionString);
+            //using IDbConnection db = new NpgsqlConnection(_connectionString);
 
-            return (await db.QueryAsync<User>($"SELECT * FROM users WHERE login=@login", new { login }))?.FirstOrDefault();
+            return (await _dbConnection.QueryAsync<User>($"SELECT * FROM users WHERE login=@login", new { login }))?.FirstOrDefault();
         }
 
         public async Task<Guid> RegisterAsync(UserRegisterRequest userRegisterRequest)
         {
-            using IDbConnection db = new NpgsqlConnection(_connectionString);
+            //using IDbConnection db = new NpgsqlConnection(_connectionString);
 
             var salt = PasswordHasher.GenerateSalt();
             var passwordHash = PasswordHasher.ComputeHash(userRegisterRequest.Password, salt);
 
-            return await db.QuerySingleAsync<Guid>(@"
+            return await _dbConnection.QuerySingleAsync<Guid>(@"
                             INSERT INTO users
                             (first_name, second_name, age, biography, city, password, salt, login)
                             VALUES(@FirstName,@SecondName,@Age,@Biography,@City,@Password,@Salt,@Login)
@@ -72,9 +71,9 @@ namespace OTUSHigloadTestProject.Services.Implementation
         {
             if (firstName.Length < 3 || lastName.Length < 3) throw new Exception("Имя и фамилия должны содержать не менее 3 букв");
 
-            using IDbConnection db = new NpgsqlConnection(_connectionString);
+            //using IDbConnection db = new NpgsqlConnection(_connectionString);
 
-            return await db.QueryAsync<UserFormDto>(@"
+            return await _dbConnection.QueryAsync<UserFormDto>(@"
                                 SELECT
                                 id,
                                 first_name as FirstName,
